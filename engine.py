@@ -19,6 +19,8 @@ Imports:
 """
 from random import randrange
 #imported component for random generation
+from math import sqrt
+#needed for vector computations
 
 import pygame
 from pygame.locals import *
@@ -30,8 +32,6 @@ from particle import Particle
 #Display functions:
 def updateDisplay():
     global screen
-    global caption
-    pygame.display.set_caption(caption)
     displayParticles()
     pygame.display.update()
 
@@ -58,7 +58,6 @@ def displayParticles():
 #Display data:
 scr_size = (400, 400) #HEIGHT, WIDTH
 center = ((scr_size[0]/2), (scr_size[1]/2))
-caption = "Initializing..."
 
 
 
@@ -82,11 +81,23 @@ def processEvents():
             raise KeyboardInterrupt
 
 def processParticles():
+    global gravity_const
     for item in particles:
-        #change position
+        #add gravity
         cur_pos = item.get_pos()
         cur_vec = item.get_vec()
-        new_pos = ((cur_pos[0]+cur_vec[0]), (cur_pos[1]+cur_vec[1]))
+        gravx = float(0-cur_pos[0])
+        gravy = float(0-cur_pos[1])
+        grav_len = sqrt((gravx*gravx)+(gravy*gravy))
+        if grav_len == 0:
+            grav_len = 1
+        grav_vec = (((gravx/grav_len)*gravity_const), ((gravy/grav_len)*gravity_const))
+        #^ normalized, and multiplied by grav constant
+        new_vec = ((cur_vec[0]+grav_vec[0]), (cur_vec[1]+grav_vec[1]))
+        item.set_vec(new_vec)
+        
+        #change position
+        new_pos = (int(round(cur_pos[0]+(cur_vec[0])))), int(round(cur_pos[1]+(cur_vec[1])))
         item.set_pos(new_pos)
         
 
@@ -99,8 +110,9 @@ def populate(n):
     return particles
 
 #Engine data:
+gravity_const = 0.3
 frames = 0
-particles = populate(100)
+particles = populate(1000)
 
 ##Let's display a screen first, doesn't have to blinker,
 ##i'll just count frames.

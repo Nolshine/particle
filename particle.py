@@ -38,8 +38,8 @@ class Particle:
         self.old_posx = posx
         self.old_posy = posy
         #vector in two parts
-        self.vecx = randrange(-5,6)
-        self.vecy = randrange(-5,6)
+        self.vecx = 1.0
+        self.vecy = 1.0
 
     def get_pos(self):
         return (self.posx, self.posy)
