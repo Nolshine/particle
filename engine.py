@@ -82,7 +82,13 @@ def processEvents():
             raise KeyboardInterrupt
 
 def processParticles():
-    pass
+    for item in particles:
+        #change position
+        cur_pos = item.get_pos()
+        cur_vec = item.get_vec()
+        new_pos = ((cur_pos[0]+cur_vec[0]), (cur_pos[1]+cur_vec[1]))
+        item.set_pos(new_pos)
+        
 
 def populate(n):
     particles = []
