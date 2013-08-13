@@ -29,11 +29,8 @@ Imports:
 from random import randrange
 #imported component for random generation
 
-print "test"
-
 class Particle:
     def __init__(self, (posx, posy)):
-        print "yay"
         #position in two parts
         self.posx = posx
         self.posy = posy

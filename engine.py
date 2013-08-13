@@ -100,7 +100,7 @@ def populate(n):
 
 #Engine data:
 frames = 0
-particles = populate(5)
+particles = populate(100)
 
 ##Let's display a screen first, doesn't have to blinker,
 ##i'll just count frames.
