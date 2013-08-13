@@ -24,24 +24,36 @@ import pygame
 from pygame.locals import *
 #imported core engine parts
 
+from particle import Particle
+#imported Particle object
 
 #Display functions:
-def drawParticle((posx, posy)):
-    global center
-    display_posx = (center[0]+posx)
-    display_posy = (center[1]+posy)
-    pygame.draw.circle(screen, (255,255,255), (display_posx, display_posy), 5)
-    
-    
 def updateDisplay():
     global screen
-    global particles
     global caption
     pygame.display.set_caption(caption)
-    screen.fill((0,0,0))
-    for particle in particles:
-        drawParticle(particle)
+    displayParticles()
     pygame.display.update()
+
+def displayParticles():
+    global particles
+    global center
+    #First, blank all old positions
+    for item in particles:
+        #get data
+        old = item.get_old()
+        real_pos = ((center[0]+old[0]), (center[1]+old[1]))
+        #blank the old
+        rect = pygame.Rect(real_pos[0], real_pos[1], 4, 4)
+        screen.fill((0,0,0), rect)
+        item.set_old()
+    #Now, draw them all anew
+    for item in particles:
+        #get data
+        pos = item.get_pos()
+        real_pos = (((center[0]+pos[0])+2), ((center[1]+pos[1])+2))
+        #draw new
+        pygame.draw.circle(screen, (255,255,255), real_pos, 2)
 
 #Display data:
 scr_size = (400, 400) #HEIGHT, WIDTH
@@ -52,7 +64,7 @@ caption = "Initializing..."
 
 #Engine functions:
 def update():
-    time_passed = clock.tick()
+    time_passed = clock.tick(50)
     global frames
     global caption
     frames += 1
@@ -66,22 +78,19 @@ def processEvents():
     for event in pygame.event.get():
         if event.type == QUIT:
             raise KeyboardInterrupt
-        elif event.type == KEY_DOWN and event.key == k_escape:
+        elif event.type == KEYDOWN and event.key == K_ESCAPE:
             raise KeyboardInterrupt
 
 def processParticles():
     pass
 
 def populate(n):
-    particles = {}
+    particles = []
     for i in range(n):
         posx = randrange(-100,101)
         posy = randrange(-100,101)
-        vecx = randrange(-1,2)
-        vecy = randrange(-1,2)
-        particles[(posx, posy)] =  (vecx, vecy)
+        particles.append(Particle((posx, posy)))
     return particles
-    
 
 #Engine data:
 frames = 0
@@ -92,6 +101,7 @@ particles = populate(5)
 pygame.init()
 
 screen = pygame.display.set_mode(scr_size, DOUBLEBUF)
+screen.fill((0,0,0))
 
 clock  = pygame.time.Clock()
 
