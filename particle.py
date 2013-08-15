@@ -51,12 +51,15 @@ class Particle:
         else:
             self.pos = pos
         self.mass = float(randrange(5,15))
+        self.color = (self.mass/100.0)*255.0
         self.direction = vec2d(0,0)
         self.dead = False
-        self.rect = pygame.Rect(self.pos.x, self.pos.y, int(self.mass/2), int(self.mass/2))
+        self.rect = pygame.Rect(self.pos.x, self.pos.y, int(self.mass/3), int(self.mass/3))
     def updatePos(self):
         self.pos = (self.pos[0]+self.direction.x,
                     self.pos[1]+self.direction.y)
+        self.rect.x = self.pos[0]
+        self.rect.y = self.pos[1]
 
     def updateOld(self):
         self.old_pos = self.pos
