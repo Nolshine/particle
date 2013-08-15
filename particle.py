@@ -43,7 +43,7 @@ from vec2d import vec2d
 class Particle:
     def __init__(self):
         self.mass = float(randrange(5,11))
-        self.pos = vec2d((randrange(100,301)*1.00),(randrange(100,301)*1.00))
+        self.pos = vec2d((randrange(100,401)*1.00),(randrange(100,401)*1.00))
         self.direction = vec2d(0,0)
 
     def updatePos(self):

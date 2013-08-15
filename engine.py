@@ -97,7 +97,7 @@ def processParticles():
 
 def populate():
     particles = []
-    for i in range(15):
+    for i in range(20):
         particles.append(Particle())
     return particles
     
