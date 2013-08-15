@@ -70,6 +70,8 @@ def processParticles():
             if other is particle:
                 continue
             else:
+                if particle.pos == other.pos:
+                    particle.pos = ((particle.pos[0]+1), (particle.pos[1]+1))
                 dx = other.pos[0]-particle.pos[0]
 ##                print dx
                 dy = other.pos[1]-particle.pos[1]
