@@ -9,56 +9,51 @@ Contains in-file:
     Particle class code:
         data members:
             (public):
-            *Current position in float from centre
-            *Old position in float from centre
-            *Vector (which is also vecocity) in float
+            mass(float)
+            position(float)
+            old position(for display)(float)
+            direction(vec2d)
         methods:
             (private):
             *Birth, or init code
             (public):
-            *Get position
-            *Set position
-            *Get vector
-            *Set vector
-            *Get old position
-            *Update old position
+            update position
+            update old position to current position
+            add vec2d to direction
 
 Imports:
     Any libraries needed for object code.
+
+
+Notes:
+    A particle needs to know where it is,
+    where it's going, and how to update itself.
+    A particle should also have mass.
+    When a particle updates itself,
+    it should react to all other particles.
+    During update the particle should pull
+    itself towards all the others, using
+    its own mass in the process.
 """
 from random import randrange
-#imported component for random generation
+
+from vec2d import vec2d
+#need vectors!
 
 class Particle:
-    def __init__(self, (posx, posy)):
-        #position in two parts
-        self.posx = posx
-        self.posy = posy
-        #old position in two parts
-        self.old_posx = posx
-        self.old_posy = posy
-        #vector in two parts
-        self.vecx = 1.0
-        self.vecy = 1.0
+    def __init__(self):
+        self.mass = float(randrange(10))
+        self.pos = vec2d((randrange(100,301)*1.00),(randrange(100,301)*1.00))
+        self.direction = vec2d(0,0)
 
-    def get_pos(self):
-        return (self.posx, self.posy)
+    def updatePos(self):
+        self.pos = (self.pos[0]+self.direction.x,
+                    self.pos[1]+self.direction.y)
 
-    def get_vec(self):
-        return (self.vecx, self.vecy)
+    def updateOld(self):
+        self.old_pos = self.pos
 
-    def set_pos(self, (x, y)):
-        self.posx = x
-        self.posy = y
-
-    def set_vec(self, (x, y)):
-        self.vecx = x
-        self.vecy = y
-
-    def get_old(self):
-        return (self.old_posx, self.old_posy)
-
-    def set_old(self):
-        self.old_posx = self.posx
-        self.old_posy = self.posy
+    def addVec(self, vec):
+        self.direction += vec
+        
         
