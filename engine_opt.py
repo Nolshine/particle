@@ -29,20 +29,10 @@ from pygame.locals import *
 from vec2d import vec2d
 #need vectors.
 
-from particle import Particle
+from particle_opt import Particle
 #the stock with which I work.
 
 #Display functions:
-def processDisplay():
-    global screen
-    global particles
-    screen.fill((0,0,0))
-    for particle in particles:
-        pos = particle.pos
-        pygame.draw.circle(screen, (255,255,255), (int(round(pos[0])),
-                                                   int(round(pos[1]))), int(particle.mass/2))
-        
-    pygame.display.update()
 
     
 #Display data:
@@ -52,16 +42,11 @@ scr_size = (500,500)
 
 #Engine functions:
 def update():
-    global paused
     """A function that advances the simulation one frame."""
-    processEvents()
-    if not paused:
-        processParticles() 
-    processDisplay()
-
-def processEvents():
     global paused
     global particles
+    global screen
+    global grav_constant
     for event in pygame.event.get():
         if event.type == QUIT or(event.type == KEYDOWN
                                  and event.key == K_ESCAPE):
@@ -73,49 +58,55 @@ def processEvents():
             pos = pygame.mouse.get_pos()
             pos = vec2d(float(pos[0]), float(pos[1]))
             particles.append(Particle(pos))
-
-def processParticles():
-    global particles
-    global grav_constant
-    for particle in particles:
-        if particle.dead:
-            particles.remove(particle)
-            continue
-        for other in particles:
-            if other is particle:
+    if not paused:
+        for particle in particles:
+            if particle.dead:
+                particles.remove(particle)
                 continue
-            else:
-                if particle.rect.collidepoint(other.pos):
-                    if particle.mass > other.mass:
-                        particle.mass += other.mass
-                        other.dead = True
-                    elif particle.mass == other.mass:
-                        particle.direction = particle.direction*(-1)
-                        other.direction = other.direction*(-1)
-                    else:
-                        other.mass += particle.mass
-                        particle.dead = True
-                        break
-                dx = other.pos[0]-particle.pos[0]
-##                print dx
-                dy = other.pos[1]-particle.pos[1]
-##                print dy
-                M = particle.mass
-##                print M
-                m = other.mass
-##                print m
-                grav_dir = vec2d(dx, dy).normalized()
-##                print grav_dir
-                D = sqrt((dx*dx)+(dy*dy))
-                if D == 0:
-                    D = 0.001
-##                print D
-                F = grav_constant*M*m/D*D
-##                print F
-                particle.addVec(grav_dir*F)
-    for particle in particles:
-        particle.updatePos()
+            for other in particles:
+                if other is particle:
+                    continue
+                else:
+                    if particle.rect.collidepoint(other.pos):
+                        if particle.mass > other.mass:
+                            particle.mass += other.mass
+                            other.dead = True
+                        elif particle.mass == other.mass:
+                            particle.direction = particle.direction*(-1)
+                            other.direction = other.direction*(-1)
+                        else:
+                            other.mass += particle.mass
+                            particle.dead = True
+                            break
+                    dx = other.pos[0]-particle.pos[0]
+    ##                print dx
+                    dy = other.pos[1]-particle.pos[1]
+    ##                print dy
+                    M = particle.mass
+    ##                print M
+                    m = other.mass
+    ##                print m
+                    grav_dir = vec2d(dx, dy).normalized()
+    ##                print grav_dir
+                    D = sqrt((dx*dx)+(dy*dy))
+                    if D == 0:
+                        D = 0.001
+    ##                print D
+                    F = grav_constant*M*m/D*D
+    ##                print F
+                    particle.addVec(grav_dir*F)
+        for particle in particles:
+            particle.updatePos()
 
+    screen.fill((0,0,0))
+    for particle in particles:
+        pos = particle.pos
+        pygame.draw.circle(screen, (255,255,255), (int(round(pos[0])),
+                                                   int(round(pos[1]))), int(particle.mass/2))
+        
+    pygame.display.update()
+ 
+ 
 def populate(n):
     global bang_force
     #I support the big bang theory.

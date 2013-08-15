@@ -45,6 +45,7 @@ from vec2d import vec2d
 
 class Particle:
     
+    __slots__ = ['pos', 'old_pos', 'mass', 'direction', 'dead', 'rect'] 
     def __init__(self, pos = None):
         if pos == None:
             self.pos = vec2d((randrange(100,401)*1.00),(randrange(100,401)*1.00))
